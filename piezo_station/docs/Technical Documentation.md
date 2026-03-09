@@ -24,21 +24,33 @@
 
 ## TABLE OF CONTENTS
 
-1. [Project Objectives]
-2. [System Architecture]
-3. [Hardware Components]
-4. [Software Implementation]
-5. [Energy Harvesting Technology]
-6. [System Operation & Workflows]
-7. [Technical Specifications]
-8. [Circuit Design & Schematics]
-9. [Code Documentation]
-10. [Testing & Validation]
-11. [Challenges & Solutions]
-12. [Results & Performance]
-13. [Future Enhancements]
-14. [Conclusion]
+Project Objectives
 
+System Architecture
+
+Hardware Components
+
+Software Implementation
+
+Energy Harvesting Technology
+
+System Operation & Workflows
+
+Technical Specifications
+
+Circuit Design & Schematics
+
+Code Documentation
+
+Testing & Validation
+
+Challenges & Solutions
+
+Results & Performance
+
+Future Enhancements
+
+Conclusion
 ---
 
 ## 1. PROJECT OBJECTIVES
