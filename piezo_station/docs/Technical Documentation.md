@@ -4,7 +4,7 @@
 
 ---
 
-## 🎯 EXECUTIVE SUMMARY
+## EXECUTIVE SUMMARY
 
 **Project Title**: PiezoStation - Piezoelectric Energy Harvesting Charging Station  
 **Institution**: St. John Paul II College of Davao, College of Engineering  
@@ -22,7 +22,7 @@
 
 ---
 
-## 📖 TABLE OF CONTENTS
+## TABLE OF CONTENTS
 
 1. [Project Objectives](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#1-project-objectives)
 2. [System Architecture](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#2-system-architecture)
