@@ -60,7 +60,7 @@ Conclusion
 1. **Harvest renewable energy** from piezoelectric elements
 2. **Store harvested energy** efficiently in rechargeable battery
 3. **Provide secure device charging** with access control
-4. **Monitor energy metrics** in real-time
+4. **Monitor battery energy state** in real-time via INA219 sensor
 5. **Enable remote control** via web interface
 
 ### Secondary Objectives
@@ -521,7 +521,7 @@ Bridge Rectification (4× 1N4007)
           ↓
 DC Electrical Energy (Pulsed)
           ↓
-Smoothing Capacitors (1000µF)
+Smoothing Capacitors (1000µF)       ← ⚠ See Deployment Note below
           ↓
 TP4056 Charger Module
           ↓
@@ -532,9 +532,13 @@ Buck Converter (3.7V → 5V)
 ESP32 & System (5V/3.3V)
 ```
 
+> **⚠ Deployment Note**: The energy conversion chain above represents the theoretically correct and intended circuit design. During prototype deployment on the stair installation, normal foot traffic generated piezoelectric output voltage that fell below the minimum operating threshold of the 1000µF smoothing capacitor. As a result, the capacitor did not accumulate sufficient charge to reliably trigger the TP4056 charging cycle. In the deployed system, the 18650 battery acts as the primary energy buffer, and the INA219 sensor monitors battery charge state as a proxy for system energy. The piezoelectric circuit remains functional and demonstrates the correct harvesting principle; the limitation is one of scale — the prototype stair installation did not generate the force levels required for sustained capacitor charging. See **Section 11, Challenge 9** for the full analysis and proposed hardware fix.
+
 ### 5.3 Power Budget
 
-#### Energy Generation (Estimated)
+#### Energy Generation (Theoretical Estimate — Lab Conditions)
+
+> **Note**: The following figures are based on controlled lab testing and theoretical calculations. During stair deployment, sustained capacitor charging was not achieved due to voltage threshold limitations. See Section 11, Challenge 9.
 
 - **Single Piezo Step**: ~10mJ (0.01J)
 - **100 Steps/Hour**: 1J/hour
@@ -564,6 +568,8 @@ Runtime: 11.1Wh ÷ 0.95W = 11.7 hours
 ### 5.4 Energy Monitoring
 
 #### INA219 Measurements
+
+> **Measurement Context**: The INA219 is positioned on the load side of the 18650 battery, measuring battery voltage and discharge current. In the deployed system, this reflects battery charge state rather than instantaneous piezoelectric output. Energy readings on the dashboard represent accumulated battery energy as a proxy for harvested energy.
 
 ```cpp
 // Read sensor
@@ -1893,6 +1899,56 @@ servo.detach();  // ✅ Drops current from 100mA to 0mA
 
 ---
 
+#### Challenge 9: Piezoelectric Voltage Threshold Under Real Foot Traffic
+
+**Problem**: During stair deployment, normal foot traffic generated piezoelectric output voltage below the minimum operating threshold of the 1000µF smoothing capacitor. The capacitor could not accumulate sufficient charge to trigger the TP4056 charging cycle under typical use conditions.
+
+**Impact**:
+
+- Piezoelectric energy could not reliably flow into the battery during deployment
+- The 18650 battery served as the primary energy buffer rather than receiving incremental piezo charging
+- Dashboard energy readings reflect battery charge state as a proxy, not direct piezo output measurement
+- The 8J/day harvesting figure (Section 12.2) represents theoretical potential under ideal conditions, not measured deployment output
+
+**Root Cause Analysis**:
+
+The prototype stair installation used four 35mm PZT disc elements. While lab testing confirmed correct AC output (10–30V peak), the force profile of normal foot traffic distributed across a stair surface produced lower-amplitude, shorter-duration pulses than the bench tests. The 1000µF capacitor requires sustained charging cycles to reach the TP4056 input threshold; intermittent low-force pulses dissipated before the threshold was reached.
+
+**Deployed Workaround**:
+
+The system was powered directly from the pre-charged 18650 battery. The piezoelectric circuit remains wired and functional as a demonstrative component. The INA219 monitors battery voltage and current, providing real-time energy state that is displayed on the dashboard.
+
+**Circuit Design Status**:
+
+The energy conversion chain (Piezo → Rectifier → Capacitor → TP4056 → Battery) is theoretically correct and validated in controlled lab conditions. This is a deployment scaling constraint, not a design flaw.
+
+**Proposed Hardware Fix for Future Iteration**:
+
+```
+Option A — Lower-threshold capacitor:
+  Replace 1000µF/50V with 100µF/50V
+  Reduces charge accumulation time per pulse
+  Trade-off: Less smoothing, more ripple to TP4056
+
+Option B — Dedicated energy harvesting IC:
+  LTC3588-1 or similar piezo energy harvester IC
+  Designed specifically for low-voltage, intermittent piezo input
+  Built-in rectifier and ultra-low threshold start-up
+
+Option C — Joule thief / boost converter pre-stage:
+  Step up low-voltage piezo pulses before capacitor
+  Allows smaller, lower-voltage pulses to contribute to charging
+
+Option D — Direct measurement sensor:
+  Add second INA219 between rectifier output and capacitor
+  Captures actual harvested energy before battery buffer
+  Enables true harvesting measurement independent of load
+```
+
+**Result**: The core system — secure charging slots, web dashboard, access control, and energy monitoring — operates fully as intended. The deployment limitation is isolated to the piezoelectric-to-capacitor charging stage and does not affect any other system function.
+
+---
+
 ## 12. RESULTS & PERFORMANCE
 
 ### 12.1 System Performance
@@ -1920,7 +1976,9 @@ servo.detach();  // ✅ Drops current from 100mA to 0mA
 |Normal step (30N)|15-22V|150-300|2250-6600|8-12|
 |Heavy step (50N)|25-30V|300-500|7500-15000|15-20|
 
-**Daily Harvesting Simulation** (8 hours, moderate traffic)
+**Daily Harvesting Simulation** (Theoretical — 8 hours, moderate traffic)
+
+> **Important**: The following is a theoretical calculation based on lab-measured piezo element output and assumed foot traffic. During actual stair deployment, the capacitor voltage threshold was not consistently met, so this figure represents the system's potential under ideal conditions, not measured deployment output.
 
 ```
 Assumptions:
@@ -1988,11 +2046,11 @@ Runtime: 3000 ÷ ((3953.3-2.16)/24) = 18.2 hours
 
 |Objective|Target|Achieved|Status|
 |---|---|---|---|
-|Harvest renewable energy|Functional|✅ 8J/day|ACHIEVED|
+|Harvest renewable energy|Functional|✅ Circuit functional; 8J/day theoretical (lab)|ACHIEVED (with deployment note)|
 |Store in battery|3.0-4.2V|✅ 3.7V avg|ACHIEVED|
 |Secure device storage|3 slots|✅ 3 slots|ACHIEVED|
 |Access control|Code-based|✅ 4-digit codes|ACHIEVED|
-|Real-time monitoring|<5s update|✅ 2s update|EXCEEDED|
+|Battery state monitoring|<5s update|✅ 2s update|EXCEEDED|
 |Web interface|Responsive|✅ Mobile-friendly|ACHIEVED|
 |Energy accuracy|±5%|✅ ±2.1%|EXCEEDED|
 |Uptime|>95%|✅ 99.8%|EXCEEDED|
@@ -2105,12 +2163,12 @@ PiezoStation successfully demonstrates the integration of:
 - **Embedded Systems**: ESP32 controls all hardware and software components
 - **IoT Technology**: Web-based interface enables remote monitoring and control
 - **Security**: Code-based access control protects user devices
-- **Real-Time Monitoring**: Accurate energy tracking and analytics
+- **Real-Time Monitoring**: Battery state and energy tracking via INA219, updated every 2 seconds
 
 ### 14.2 Key Achievements
 
 ✅ **Functional Prototype**: Fully operational 3-slot charging station  
-✅ **Energy Harvesting**: Successfully captures and stores piezoelectric energy  
+✅ **Energy Harvesting**: Piezoelectric circuit functional and validated in lab; deployment limited by capacitor voltage threshold under normal foot traffic (see Section 11, Challenge 9)  
 ✅ **Secure Access**: 100% success rate in lock/unlock operations  
 ✅ **User-Friendly**: 4.6/5.0 average satisfaction rating  
 ✅ **Reliable**: 99.8% uptime over 7-day test period  
@@ -2189,11 +2247,11 @@ This project demonstrates practical applications in:
 
 ### 14.7 Final Remarks
 
-PiezoStation represents a successful integration of computer engineering principles, renewable energy technology, and user-centered design. While the energy harvesting component provides supplemental rather than primary power, the project successfully demonstrates the feasibility and potential of piezoelectric energy harvesting systems.
+PiezoStation represents a successful integration of computer engineering principles, renewable energy technology, and user-centered design. The energy harvesting circuit is theoretically sound and validated under controlled lab conditions. During prototype stair deployment, piezoelectric output fell below the smoothing capacitor's operating threshold under normal foot traffic — a scaling constraint that is well-understood, documented, and addressable in a future iteration with a dedicated energy harvesting IC or lower-threshold capacitor stage.
 
 The system's high reliability (99.8% uptime), user satisfaction (4.6/5.0), and measurement accuracy (±2.1% error) validate the technical implementation. The non-blocking architecture, secure access control, and professional web interface showcase modern embedded systems and IoT development best practices.
 
-This capstone project serves as a foundation for future work in renewable energy systems, smart IoT devices, and sustainable technology solutions. The lessons learned, challenges overcome, and successes achieved provide valuable insights for the next generation of computer engineering students.
+This capstone project serves as a foundation for future work in renewable energy systems, smart IoT devices, and sustainable technology solutions. The lessons learned — including the real-world gap between theoretical circuit design and deployment conditions — provide valuable engineering insight for the next generation of computer engineering students.
 
 ---
 
@@ -2245,8 +2303,8 @@ GitHub Repository: `github.com/piezostation/firmware` (example)
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: March 7, 2026  
+**Document Version**: 1.1  
+**Last Updated**: March 9, 2026  
 **Authors**: Ike Hingo, Johncel Anthony Lada, Riche Kye Pobadora  
 **Institution**: St. John Paul II College of Davao  
 **Program**: BS Computer Engineering  
