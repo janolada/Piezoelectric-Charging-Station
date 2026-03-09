@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <title>Piezo Smart Dashboard</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="logo" id="admin-trigger" title="Tap 5 times for Admin">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+            </svg>
+            PiezoStation
+        </div>
+        <nav>
+            <button class="nav-btn active" onclick="showTab('home')">Dashboard</button>
+            <button class="nav-btn" onclick="showTab('stats')">Analytics</button>
+            <button class="nav-btn" onclick="showTab('team')">Team</button>
+            <button id="theme-toggle" class="nav-btn" title="Toggle Theme">🌙</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HOME TAB -->
+        <section id="tab-home" class="content-section active">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                        </div>
+                        <h2>Harvesting Status</h2>
+                        <div class="live-indicator"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="kpi-box">
+                            <span class="kpi-label">Total Harvested Energy</span>
+                            <span class="kpi-value" id="home-joules">0.00 J</span>
+                        </div>
+                        <hr class="divider">
+                        <div class="data-row">
+                            <span class="data-label">18650 Battery Voltage</span>
+                            <span class="data-value" id="home-volt">0.00 V</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">Charging Current</span>
+                            <span class="data-value" id="home-current">0.00 A</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="data-label">System State</span>
+                            <span class="data-value" style="color:var(--green);">Operational</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </div>
+                        <h2>Charging Slots</h2>
+                    </div>
+                    <div class="card-content slots-list">
+                        <div class="slot vacant" id="slot-1" data-slot="1">
+                            <div>
+                                <span class="slot-title">Slot 1</span>
+                                <span class="slot-desc">Available</span>
+                            </div>
+                        </div>
+                        <div class="slot vacant" id="slot-2" data-slot="2">
+                            <div>
+                                <span class="slot-title">Slot 2</span>
+                                <span class="slot-desc">Available</span>
+                            </div>
+                        </div>
+                        <div class="slot vacant" id="slot-3" data-slot="3">
+                            <div>
+                                <span class="slot-title">Slot 3</span>
+                                <span class="slot-desc">Available</span>
+                            </div>
+                        </div>
+                        <p style="text-align:center; margin-top:10px; color:var(--muted); font-size:0.8rem;">
+                            Tap a slot to lock/unlock.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STATS TAB -->
+        <section id="tab-stats" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" class="card-icon">
+                        <line x1="12" y1="20" x2="12" y2="10"></line>
+                        <line x1="18" y1="20" x2="18" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="16"></line>
+                    </svg>
+                    <h2>System Analytics</h2>
+                </div>
+                <div class="card-content">
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-label"> 18650 Voltage </span>
+                            <span class="stat-value">
+                                <span id="sc-voltage-stat">0.00</span>
+                                <span class="stat-unit">V</span>
+                            </span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Peak Voltage</span>
+                            <span class="stat-value">
+                                <span id="peak-voltage">0.00</span>
+                                <span class="stat-unit">V</span>
+                            </span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Total Energy</span>
+                            <span class="stat-value">
+                                <span id="total-joules">0.00</span>
+                                <span class="stat-unit">J</span>
+                            </span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Harvest Status</span>
+                            <span class="stat-value" id="harvest-status" style="font-size: 1.2em;">Idle</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="energyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       <section id="tab-team" class="content-section">
+           <div class="team-grid">
+                
+                <div class="team-card" onclick="toggleCreator(this)">
+                    <div class="team-header">
+                        <img src="assets/ike.jpg" alt="Ike" class="team-img">
+                        <div class="team-intro">
+                            <h3>Ike Hingo</h3>
+                            <span class="team-role">Researcher & Documentation</span>
+                        </div>
+                        <svg class="toggle-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="team-details">
+                        <h4 style="color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:10px;">About:</h4>
+                        <p><strong>Research & Technical Writing:</strong></p>
+                        <p>Led the project research, feasibility studies, and comprehensive documentation. Managed the capstone paper and data gathering.</p>
+                        <p style="margin-top:10px;"><strong>Education:</strong></p>
+                        <ul style="padding-left:15px; color:var(--muted); font-size:0.9em;">
+                            <li>Bachelor of Science in Computer Engineering: St. John Paul II College (2022-2026)</li>
+                            <li>General Academic Strand (GAS): Tagakpan National High School (2020-2022)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="team-card" onclick="toggleCreator(this)">
+                    <div class="team-header">
+                        <img src="assets/johncel.jpeg" alt="Johncel" class="team-img">
+                        <div class="team-intro">
+                            <h3>Johncel Anthony Lada</h3>
+                            <span class="team-role">Software Engineer</span>
+                        </div>
+                        <svg class="toggle-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="team-details">
+                        <h4 style="color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:10px;">About:</h4>
+                        <p><strong>Full-Stack Development:</strong></p>
+                        <p>Engineered the embedded systems backend to manage hardware control and server logic. Built the full-stack web dashboard for real-time visualization and user interaction. Implemented energy monitoring algorithms to process sensor data and calculate power metrics.</p>
+                        <p style="margin-top:10px;"><strong>Education:</strong></p>
+                        <ul style="padding-left:15px; color:var(--muted); font-size:0.9em;">
+                            <li>Bachelor of Science in Computer Engineering: St. John Paul II College (2022-2026)</li>
+                            <li> Science, Technology, Mathematics and Engineering (STEM): Calinan National High School (2020-2022)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="team-card" onclick="toggleCreator(this)">
+                    <div class="team-header">
+                        <img src="assets/riche.jpg" alt="Riche" class="team-img">
+                        <div class="team-intro">
+                            <h3>Riche Kye Pobadora</h3>
+                            <span class="team-role">Hardware Engineer</span>
+                        </div>
+                        <svg class="toggle-icon" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="team-details">
+                        <h4 style="color:var(--primary); border-bottom:1px solid var(--border); padding-bottom:5px; margin-bottom:10px;">About:</h4>
+                        <p><strong>Hardware Assembly & System Design:</strong></p>
+                        <p>Executed the physical engineering and assembly of the station. Integrated the electronic circuits through precision soldering and wiring management. Performed mechanical calculations to ensure the integrity of the piezoelectric harvesting mechanism.</p>
+                        <p style="margin-top:10px;"><strong>Education:</strong></p>
+                        <ul style="padding-left:15px; color:var(--muted); font-size:0.9em;">
+                            <li>Bachelor of Science in Computer Engineering: St. John Paul II College (2022-2026)</li>
+                            <li>Science, Technology, Mathematics and Engineering (STEM): AMA Computer College - Davao (2020-2022)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div> 
+            <div class="card" style="margin-top: 30px;">
+             
+            <!-- INSTITUTIONAL AFFILIATIONS -->
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-header">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" class="card-icon">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                <h2>Institutional Affiliations</h2>
+                </div>
+                <div class="card-content">
+                    <div class="affiliations-grid">
+                        <div class="affiliation-card">
+                            <div class="affiliation-logo">
+                                <img src="assets/sjp2cd.jpg">
+                            </div>
+                            <div class="affiliation-info">
+                                <h4>St. John Paul II College of Davao</h4>
+                                <p>A non-sectarian academic institution serving the professional community by developing competent and employable individuals guided by the ideals of St. John Paul II, contributing to sustainable human development.</p>
+                                <span class="affiliation-tag">Home Institution</span>
+                            </div>
+                        </div>
+
+                        <div class="affiliation-card">
+                            <div class="affiliation-logo">
+                                <img src="assets/coe.jpg" alt="College of Engineering" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%234CAF50%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2220%22 text-anchor=%22middle%22 fill=%22white%22 font-weight=%22bold%22%3ECOE%3C/text%3E%3C/svg%3E'">
+                            </div>
+                            <div class="affiliation-info">
+                                <h4>College of Engineering</h4>
+                                <p>Fostering innovation and technical excellence through comprehensive engineering programs and hands-on research projects.</p>
+                                <span class="affiliation-tag">Academic Department</span>
+                            </div>
+                        </div>
+
+                        <div class="affiliation-card">
+                            <div class="affiliation-logo">
+                                <img src="assets/icpep.jpg" alt="IECEP" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect fill=%22%23ff9800%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-size=%2216%22 text-anchor=%22middle%22 fill=%22white%22 font-weight=%22bold%22%3EIECEP%3C/text%3E%3C/svg%3E'">
+                            </div>
+                            <div class="affiliation-info">
+                                <h4>Institute of Computer Engineers of the Philippines - SJP2CD Chapter</h4>
+                                <p>The official academic organization of Computer Engineering students in St. John Paul II College of Davao.</p>
+                                <span class="affiliation-tag">Professional Body</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJECT ACKNOWLEDGMENT -->
+            <div class="acknowledgment-footer">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <p>Developed with dedication as a capstone project for BS Computer Engineering</p>
+                <span class="year-badge">Academic Year 2025-2026</span>
+            </div>
+        </section>
+    </main>
+</div>
+
+<!-- MODALS -->
+<div id="modal-code" class="modal-overlay">
+    <div class="modal-box">
+        <h3>✅ Slot Reserved!</h3>
+        <p>Your unlock code is:</p>
+        <div class="big-code" id="disp-code">----</div>
+        <p class="modal-note">Remember this code! Click "Lock Door" after placing your device.</p>
+        <button class="btn" id="confirmCodeBtn">Lock Door</button>
+    </div>
+</div>
+
+<div id="modal-unlock" class="modal-overlay">
+    <div class="modal-box">
+        <span class="close-btn">&times;</span>
+        <h3>Retrieve Device</h3>
+        <p>Enter your 4-digit code:</p>
+        <input type="text" id="input-code" maxlength="4" placeholder="0000" inputmode="numeric" autocomplete="off">
+        <p id="errorCode" class="error-message"></p>
+        <button class="btn" id="unlockBtn">Unlock Slot</button>
+    </div>
+</div>
+
+<div id="modal-login" class="modal-overlay">
+    <div class="modal-box">
+        <span class="close-btn">&times;</span>
+        <h3>Admin Access</h3>
+        <input type="text" id="adm-user" placeholder="Username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input type="password" id="adm-pass" placeholder="Password" autocomplete="off">
+        <p id="adminLoginError" class="error-message"></p>
+        <button class="btn" id="adminLoginBtn">Login</button>
+    </div>
+</div>
+
+<div id="modal-admin" class="modal-overlay">
+    <div class="modal-box">
+        <span class="close-btn">&times;</span>
+        <h3>🔧 Admin Control Panel</h3>
+        
+        <div class="admin-section">
+            <h4>Force Unlock Slot</h4>
+            <div class="admin-row">
+                <input type="number" id="adm-slot" placeholder="Slot #" min="1" max="3">
+                <button class="btn" id="adminUnlockBtn">Unlock</button>
+            </div>
+        </div>
+
+        <hr class="divider">
+        
+        <div class="admin-section">
+            <h4>Data Logs</h4>
+            <input type="date" id="log-date-filter">
+            <button class="btn" id="downloadCSVBtn">Download CSV</button>
+            <button class="btn red" id="clearLogsBtn">Clear Logs</button>
+        </div>
+
+        <hr class="divider">
+        
+        <button class="btn red" id="adminResetBtn">Reset All Slots</button>
+    </div>
+</div>
+
+<script src="chart.min.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
