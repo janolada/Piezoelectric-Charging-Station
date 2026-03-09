@@ -24,20 +24,20 @@
 
 ## TABLE OF CONTENTS
 
-1. [Project Objectives](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#1-project-objectives)
-2. [System Architecture](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#2-system-architecture)
-3. [Hardware Components](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#3-hardware-components)
-4. [Software Implementation](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#4-software-implementation)
-5. [Energy Harvesting Technology](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#5-energy-harvesting-technology)
-6. [System Operation & Workflows](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#6-system-operation--workflows)
-7. [Technical Specifications](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#7-technical-specifications)
-8. [Circuit Design & Schematics](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#8-circuit-design--schematics)
-9. [Code Documentation](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#9-code-documentation)
-10. [Testing & Validation](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#10-testing--validation)
-11. [Challenges & Solutions](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#11-challenges--solutions)
-12. [Results & Performance](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#12-results--performance)
-13. [Future Enhancements](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#13-future-enhancements)
-14. [Conclusion](https://claude.ai/chat/626b08ad-e1bb-42da-908f-36b17c8e68f5#14-conclusion)
+1. [Project Objectives]
+2. [System Architecture]
+3. [Hardware Components]
+4. [Software Implementation]
+5. [Energy Harvesting Technology]
+6. [System Operation & Workflows]
+7. [Technical Specifications]
+8. [Circuit Design & Schematics]
+9. [Code Documentation]
+10. [Testing & Validation]
+11. [Challenges & Solutions]
+12. [Results & Performance]
+13. [Future Enhancements]
+14. [Conclusion]
 
 ---
 
